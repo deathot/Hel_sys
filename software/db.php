@@ -1,6 +1,9 @@
 <?php
 // db.php — 数据库连接，所有页面 include 这个文件
 
+// 强制声明 HTTP 响应编码，防止 Windows/Apache 默认用 latin1
+header('Content-Type: text/html; charset=utf-8');
+
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');       // XAMPP 默认用户名
 define('DB_PASS', 'password');           // XAMPP 默认无密码
@@ -37,6 +40,8 @@ function get_db(): mysqli {
             die('<h2 style="color:red">' . htmlspecialchars($err) . '</h2>');
         }
         $conn->set_charset('utf8mb4');
+        // 双保险：显式告诉 MySQL 服务端用 utf8mb4，解决 Windows my.ini 默认 latin1 的问题
+        $conn->query("SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'");
     }
     return $conn;
 }
